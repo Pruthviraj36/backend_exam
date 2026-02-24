@@ -3,6 +3,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
+export interface UserResponse {
+  id: number;
+  name: string;
+  email: string;
+  role?: { id: number; name: Roles };
+  created_at: Date;
+}
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -17,7 +25,7 @@ export class UsersService {
     private rolesService: RolesService,
   ) {}
 
-  private buildUserResponse(user: User) {
+  private buildUserResponse(user: User): UserResponse {
     return {
       id: user.id,
       name: user.name,
@@ -63,7 +71,7 @@ export class UsersService {
     return users.map((u) => this.buildUserResponse(u));
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<UserResponse | null> {
     const user = await this.userRepo.findOne({
       where: { id },
       relations: ['role'],
