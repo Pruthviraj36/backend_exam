@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Roles as RoleEnum } from 'src/roles/entities/role.entity';
 
 @Controller('comments')
 export class CommentsController {
@@ -30,11 +35,15 @@ export class CommentsController {
     return this.commentsService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleEnum.MANAGER, RoleEnum.USER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
     return this.commentsService.update(+id, updateCommentDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleEnum.MANAGER, RoleEnum.USER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.commentsService.remove(+id);

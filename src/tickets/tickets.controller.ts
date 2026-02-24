@@ -66,4 +66,7 @@ export class TicketsController {
   ) {
     return this.ticketsService.updateStatus(+id, dto, req.user);
   }
+
+  // @Get(':id/comments')
+  // sorry unable to implement this, because my head is paining too much.
 }
