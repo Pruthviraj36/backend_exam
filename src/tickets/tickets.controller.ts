@@ -39,13 +39,6 @@ export class TicketsController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(RoleEnum.MANAGER, RoleEnum.SUPPORT, RoleEnum.USER)
-  @Get(':id')
-  findOne(@Param('id') id: string, @Req() req: any) {
-    return this.ticketsService.findOne(+id, req.user);
-  }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleEnum.MANAGER)
   @Delete(':id')
   remove(@Param('id') id: string) {

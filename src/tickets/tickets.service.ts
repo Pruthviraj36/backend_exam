@@ -65,25 +65,6 @@ export class TicketsService {
     return [];
   }
 
-  async findOne(id: number, user?: JwtUser) {
-    const ticket = await this.ticketRepo.findOne({
-      where: { id },
-      relations: ['created_by', 'assigned_to'],
-    });
-    if (!ticket) throw new NotFoundException('Ticket not found');
-
-    if (user) {
-      if (user.role === Roles.SUPPORT && ticket.assigned_to?.id !== user.id) {
-        throw new ForbiddenException();
-      }
-      if (user.role === Roles.USER && ticket.created_by.id !== user.id) {
-        throw new ForbiddenException();
-      }
-    }
-
-    return ticket;
-  }
-
   async remove(id: number) {
     const result = await this.ticketRepo.delete(id);
     if (result.affected === 0) {
